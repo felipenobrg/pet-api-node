@@ -3,6 +3,7 @@ import type PetTypes from "../types/PetTypes";
 import EnumEspecie from "../enum/EnumSpecie";
 import TypePet from "../types/PetTypes";
 import PetRepository from '../repositories/PetRepository';
+import PetEntity from '../entities/PetEntity';
 
 let petList: Array<TypePet> = [];
 
@@ -15,19 +16,18 @@ function geraId() {
 export default class PetController {
   constructor(private respository: PetRepository) {}
   createPet(req: Request, res: Response) {
-    const { isAdopted, specie, dateOfBirth, name } = <PetTypes>req.body;
+    const { isAdopted, specie, dateOfBirth, name } = <PetEntity>req.body;
 
     if (!Object.values(EnumEspecie).includes(specie)) {
       return res.status(400).json({ error: "Especie inválida" });
     }
 
-    const newPet: TypePet = {
-      id: geraId(),
-      isAdopted,
-      specie,
-      dateOfBirth,
-      name,
-    };
+    const newPet: PetEntity = new PetEntity()
+      newPet.id= geraId(),
+      newPet.isAdopted=isAdopted,
+      newPet.specie=specie,
+      newPet.dateOfBirth=dateOfBirth,
+      newPet.name=name,
     this.respository.createPet(newPet)
     return res.status(201).json(newPet);
   }
