@@ -22,6 +22,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "tsc-watch": "^6.0.4"
+    "reflect-metadata": "^0.2.2",
+    "tsc-watch": "^6.0.4",
+    "typeorm": "^0.3.20"
   }
 }
