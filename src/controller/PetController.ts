@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import type PetTypes from "../types/PetTypes";
 import EnumEspecie from "../enum/EnumSpecie";
 import TypePet from "../types/PetTypes";
+import PetRepository from '../repositories/PetRepository';
 
 let petList: Array<TypePet> = [];
 
@@ -12,6 +13,7 @@ function geraId() {
 }
 
 export default class PetController {
+  constructor(private respository: PetRepository) {}
   createPet(req: Request, res: Response) {
     const { isAdopted, specie, dateOfBirth, name } = <PetTypes>req.body;
 
@@ -26,7 +28,7 @@ export default class PetController {
       dateOfBirth,
       name,
     };
-    petList.push(newPet);
+    this.respository.createPet(newPet)
     return res.status(201).json(newPet);
   }
 
