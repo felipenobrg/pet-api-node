@@ -14,7 +14,7 @@ function geraId() {
 }
 
 export default class PetController {
-  constructor(private respository: PetRepository) {}
+  constructor(private respository: PetRepository) { }
   createPet(req: Request, res: Response) {
     const { isAdopted, specie, dateOfBirth, name } = <PetEntity>req.body;
 
@@ -23,31 +23,31 @@ export default class PetController {
     }
 
     const newPet: PetEntity = new PetEntity()
-      newPet.id= geraId(),
-      newPet.isAdopted=isAdopted,
-      newPet.specie=specie,
-      newPet.dateOfBirth=dateOfBirth,
-      newPet.name=name,
-    this.respository.createPet(newPet)
+    newPet.id = geraId(),
+      newPet.isAdopted = isAdopted,
+      newPet.specie = specie,
+      newPet.dateOfBirth = dateOfBirth,
+      newPet.name = name,
+      this.respository.createPet(newPet)
     return res.status(201).json(newPet);
   }
 
-  petList(req: Request, res: Response) {
-    return res.status(200).json(petList);
+  async petList(req: Request, res: Response) {
+    const listPets = await this.respository.petList();
+    return res.status(200).json(listPets)
   }
 
-  updatePet(req: Request, res: Response) {
+  async updatePet(req: Request, res: Response) {
     const { id } = req.params;
-    const { name, dateOfBirth, specie, isAdopted } = req.body as TypePet;
-    const pet = petList.find((pet) => pet.id === Number(id));
-    if (!pet) {
-      return res.status(400).json({ mensagem: "Pet não encontrado" });
+    const { sucess, message } = await this.respository.updatePet(
+      Number(id)
+    req.body as PetEntity
+    )
+
+    if (!sucess) {
+      return res.status(404).json({ message })
     }
-    pet.name = name;
-    pet.dateOfBirth = dateOfBirth;
-    pet.specie = specie;
-    pet.isAdopted = isAdopted;
-    return res.status(200).json(pet);
+    return res.sendStatus(200);
   }
 
   deletePet(req: Request, res: Response) {

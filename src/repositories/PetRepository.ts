@@ -12,14 +12,47 @@ export default class PetRepository implements InterfacePetRepository {
     createPet(pet: PetEntity): void {
         this.repository.save(pet)
     }
-    petList(): PetEntity[] {
-        throw new Error("Method not implemented.");
+
+    async petList(): Promise<PetEntity[]> {
+      return await this.repository.find()
     }
-    updatePet(id: number, pet: PetEntity): void {
-        throw new Error("Method not implemented.");
+
+    async updatePet(id: number, newData: PetEntity): Promise<{success: boolean, message?: string}> {
+        try {
+            const petToUpdate = await this.repository.findOne({ where: { id }})
+
+            if(!petToUpdate) {
+                return { success: false, message: "Pet não encontrado"}
+            }
+
+            Object.assign(petToUpdate, newData)
+            return { success: true}
+        } catch (error) {
+            console.log(error)
+            return {
+                success: false,
+                message: "Ocorru um erro ao atualizar o pet"
+            }
+        }
     }
-    deletePet(id: number, pet: PetEntity): void {
-        throw new Error("Method not implemented.");
+
+    async deletePet(id: number, newData: PetEntity): Promise<{success: boolean, message?: string}>{
+        try {
+            const petToRemove = await this.repository.findOne({ where: { id }})
+
+            if(!petToRemove) {
+                return { success: false, message: "Pet não encontrado"}
+            }
+
+            await this.repository.remove(petToRemove)
+            return { success: true}
+        } catch (error) {
+            console.log(error)
+            return {
+                success: false,
+                message: "Ocorru um erro ao deletar o pet"
+            }
+        }
     }
 
 }
