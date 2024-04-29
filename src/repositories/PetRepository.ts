@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import PetEntity from "../entities/PetEntity";
 import InterfacePetRepository from "./interfaces/InterfacePetRepository";
+import AdopterEntity from "../entities/AdopterEntity";
 
 export default class PetRepository implements InterfacePetRepository {
     private repository: Repository<PetEntity>
@@ -55,4 +56,7 @@ export default class PetRepository implements InterfacePetRepository {
         }
     }
 
+    async createAdopter(adopter: AdopterEntity): Promise<void> {
+        await this.repository.save(adopter);
+      }
 }
